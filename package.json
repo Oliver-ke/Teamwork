@@ -1,24 +1,40 @@
 {
-  "name": "teamwork",
-  "version": "1.0.0",
-  "description": "A internal collaboration tool for a company",
-  "main": "server.js",
-  "scripts": {
-    "test": "macha run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Oliver-ke/Teamwork.git"
-  },
-  "keywords": [
-    "application",
-    "gif",
-    "andela"
-  ],
-  "author": "AZORJI KELECHI OLIVER",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Oliver-ke/Teamwork/issues"
-  },
-  "homepage": "https://github.com/Oliver-ke/Teamwork#readme"
+	"name": "teamwork",
+	"version": "1.0.0",
+	"description": "A internal collaboration tool for a company",
+	"main": "server.js",
+	"scripts": {
+		"test": "macha run",
+		"clean": "rm -rf build && mkdir build",
+		"build-babel": "babel -d ./build ./src -s",
+		"build": "npm run clean && npm run build-babel",
+		"start": "npm run build && node ./build/server.js",
+		"start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Oliver-ke/Teamwork.git"
+	},
+	"keywords": [ "application", "gif", "andela" ],
+	"author": "AZORJI KELECHI OLIVER",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Oliver-ke/Teamwork/issues"
+	},
+	"homepage": "https://github.com/Oliver-ke/Teamwork#readme",
+	"dependencies": {
+		"express": "^4.17.1"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.6.4",
+		"@babel/core": "^7.6.4",
+		"@babel/node": "^7.6.3",
+		"@babel/preset-env": "^7.6.3",
+		"@babel/register": "^7.6.2",
+		"cross-env": "^6.0.3",
+		"eslint": "^6.6.0",
+		"eslint-config-airbnb-base": "^14.0.0",
+		"eslint-plugin-import": "^2.18.2",
+		"nodemon": "^1.19.4"
+	}
 }
