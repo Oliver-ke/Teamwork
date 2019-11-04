@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - "node"
+notifications:
+  email: false
+services:
+  - postgresql
+env:
+  global:
+  - CC_TEST_REPORTER_ID=c40d071d0ccdee05c64ab35637d12a9185428b40ff2aa8e1b7c5d7b8b5e175eb
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - npm run test
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+cache:
+  directories:
+    - "node_modules"
+after_success:
+- npm run coverage
+deploy:
+  provider: heroku
+  edge: true
+  app:
+    develop: teammi
