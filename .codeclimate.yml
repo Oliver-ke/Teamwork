@@ -1,0 +1,5 @@
+version: "2"
+exclude_patterns:
+  - "src/database/"
+  - "src/database/models"
+  - "**/test/"
