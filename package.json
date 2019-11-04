@@ -8,14 +8,20 @@
 		"clean": "rm -rf build && mkdir build",
 		"build-babel": "babel -d ./build ./src -s",
 		"build": "npm run clean && npm run build-babel",
+		"coverage": "nyc report --reporter=text-lcov --reporter=lcov",
 		"start": "npm run build && node ./build/server.js",
-		"start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/server.js"
+		"start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/server.js",
+		"lint": "node_modules/.bin/eslint --fix src/**/*.js"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Oliver-ke/Teamwork.git"
 	},
-	"keywords": [ "application", "gif", "andela" ],
+	"keywords": [
+		"application",
+		"gif",
+		"andela"
+	],
 	"author": "AZORJI KELECHI OLIVER",
 	"license": "MIT",
 	"bugs": {
@@ -23,7 +29,10 @@
 	},
 	"homepage": "https://github.com/Oliver-ke/Teamwork#readme",
 	"dependencies": {
-		"express": "^4.17.1"
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"pg": "^7.12.1"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.6.4",
