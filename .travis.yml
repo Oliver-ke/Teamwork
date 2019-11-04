@@ -22,7 +22,7 @@ cache:
 after_success:
 - npm run coverage
 deploy:
-  provider: heroku
+  provider: heroku:git
   edge: true
   app:
     develop: teammi
