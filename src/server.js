@@ -1,10 +1,12 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import apiDocs from '../docs';
 import initializeDb from './database/initDb';
 
 const app = express();
-app.use(cors);
+app.use(cors());
 
 // Initialize db, create tables if not present
 // do this if current environment is not test
@@ -16,6 +18,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
 app.get('/api/v1', (req, res) => {
   res.status(200).json({ message: 'welcome to teamwork' });
 });
