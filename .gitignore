@@ -3,3 +3,4 @@ node_modules
 .gitmessage
 coverage
 .nyc_output
+build
