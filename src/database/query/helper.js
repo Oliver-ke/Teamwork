@@ -5,7 +5,7 @@ import formater from '../../utils/db_utils/formater';
 // Add item to a table
 export const createItem = async (table, data) => {
 	const values = Object.values(data);
-	const keys = Object.keys(data);
+	const keys = Object.keys(data).map(val => `"${val}"`);
 	const columns = getColumns(keys);
 	const query = {
 		text: `INSERT INTO ${table}(
@@ -27,7 +27,7 @@ export const updateItem = async (table, id, update) => {
 	const value = Object.values(update).toString();
 	const query = {
 		text: `UPDATE ${table} SET ${key}=$2 WHERE id=$1 RETURNING *`,
-		values: [ id, value ]
+		values: [id, value]
 	};
 	try {
 		const { rows } = await dbInterface.query(query);
@@ -41,11 +41,28 @@ export const updateItem = async (table, id, update) => {
 export const deleteItem = async (table, id) => {
 	const query = {
 		text: `DELETE FROM ${table} WHERE id=$1 `,
-		values: [ id ]
+		values: [id]
 	};
 	try {
 		const { rowCount } = await dbInterface.query(query);
 		return { error: null, result: rowCount };
+	} catch (error) {
+		return { error: error.message };
+	}
+};
+
+// Get a single item from db, expect a single key value pair option
+export const getItem = async (table, option) => {
+	const value = Object.values(option);
+	const key = Object.keys(option)[0];
+	const query = {
+		text: `SELECT * FROM ${table} WHERE ${key}=$1`,
+		values: value
+	};
+	try {
+		const { rows } = await dbInterface.query(query);
+		return { error: null, result: rows[0] };
+		//return { error: null, result: formater(table, rows) };
 	} catch (error) {
 		return { error: error.message };
 	}
@@ -58,9 +75,9 @@ export const getItems = async (table, condition = null, option = null) => {
 	const query = !condition
 		? { text: `SELECT * FROM ${table}` }
 		: {
-				text: `SELECT * FROM ${table} WHERE ${key}=$1 ${option ? `AND ${option[0]}='${option[1]}'` : ''}`,
-				values: value
-			};
+			text: `SELECT * FROM ${table} WHERE ${key}=$1 ${option ? `AND ${option[0]}='${option[1]}'` : ''}`,
+			values: value
+		};
 	try {
 		const { rows } = await dbInterface.query(query);
 

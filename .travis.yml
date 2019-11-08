@@ -21,8 +21,3 @@ cache:
     - "node_modules"
 after_success:
 - npm run coverage
-deploy:
-  provider: heroku:git
-  edge: true
-  app:
-    develop: teammi

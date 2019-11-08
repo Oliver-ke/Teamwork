@@ -1,6 +1,5 @@
 import dbInterface from './index';
 import userTable from './models/User';
-import userSeed from './seeds/001-users';
 
 export default async () => {
 	try {
@@ -9,8 +8,6 @@ export default async () => {
 		// create tables
 		await dbInterface.query(userTable);
 		if (process.env.NODE_ENV !== 'production') {
-			// run seeds here
-			userSeed();
 			console.log('Database connected with tables');
 		}
 		return true;
