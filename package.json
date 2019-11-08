@@ -9,9 +9,10 @@
 		"build-babel": "babel -d ./build ./src -s",
 		"build": "npm run clean && npm run build-babel",
 		"coverage": "nyc report --reporter=text-lcov --reporter=lcov",
-		"start": "npm run build && node ./build/server.js",
+		"start": "node ./build/server.js",
 		"start:dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/server.js",
-		"lint": "node_modules/.bin/eslint --fix src/**/*.js"
+		"lint": "node_modules/.bin/eslint --fix src/**/*.js",
+		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
 	},
 	"repository": {
 		"type": "git",
