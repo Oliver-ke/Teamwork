@@ -1,14 +1,22 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import pool from '../../database';
+import seedUser from '../../database/seeds/001-users';
+import initDb from '../../database/initDb';
 import server from '../../server';
 
 chai.use(chaiHttp);
 chai.should();
 
-const entryRoute = '/api/v1';
+const entryRoute = '/';
 
 // Base Route Test
 describe('Base Route Test ', () => {
+  before(async () => {
+    await pool.clearDb();
+    await initDb();
+    seedUser();
+  });
   it('should return welcome to teamwork', (done) => {
     chai.request(server).get(entryRoute).end((error, response) => {
       if (error) throw Error(`Error making test request ${entryRoute}`);
