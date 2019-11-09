@@ -38,3 +38,10 @@ export const loginUser = [
     .withMessage('Provide your password')
     .trim(),
 ];
+
+export const createGif = [
+  body('title').not().isEmpty().isString()
+    .withMessage('Provide a title for gif')
+    .trim(),
+  body('share').optional().isBoolean().withMessage('Share should be true or false else default to true')
+];

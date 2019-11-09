@@ -1,5 +1,6 @@
 import dbInterface from './index';
 import userTable from './models/User';
+import gifTable from './models/Gif'
 
 export default async () => {
 	try {
@@ -7,6 +8,7 @@ export default async () => {
 		await dbInterface.query('SELECT NOW()');
 		// create tables
 		await dbInterface.query(userTable);
+		await dbInterface.query(gifTable);
 		if (process.env.NODE_ENV !== 'production') {
 			console.log('Database connected with tables');
 		}

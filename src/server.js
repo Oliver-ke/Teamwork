@@ -1,5 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
+import expressFileUpload from 'express-fileupload';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import apiDocs from '../docs';
@@ -14,7 +15,7 @@ app.use(cors());
 if (process.env.NODE_ENV !== 'test') {
   initializeDb();
 }
-
+app.use(expressFileUpload());
 // setup express body-perser for json data
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
