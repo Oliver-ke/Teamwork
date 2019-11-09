@@ -1,3 +1,3 @@
-import cloudinary from './cloudinary';
+import uploadCloudinary from './cloudinary';
 
-export default { cloudinary };
+export { uploadCloudinary };

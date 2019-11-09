@@ -1,7 +1,7 @@
 const User = `
     CREATE TABLE IF NOT EXISTS
       users(
-        "id" VARCHAR(128) NOT NULL,
+        "id" VARCHAR(128) PRIMARY KEY,
         "firstName" VARCHAR(128) NOT NULL,
         "lastName" VARCHAR(128) NOT NULL,
         "email" VARCHAR(128) NOT NULL,
