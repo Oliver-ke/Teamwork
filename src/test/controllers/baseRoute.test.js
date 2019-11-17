@@ -2,6 +2,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import pool from '../../database';
 import seedUser from '../../database/seeds/001-users';
+import seedArticle from '../../database/seeds/003-article';
 import initDb from '../../database/initDb';
 import server from '../../server';
 
@@ -16,6 +17,7 @@ describe('Base Route Test ', () => {
     await pool.clearDb();
     await initDb();
     seedUser();
+    seedArticle();
   });
   it('should return welcome to teamwork', (done) => {
     chai.request(server).get(entryRoute).end((error, response) => {

@@ -2,12 +2,8 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import fs from 'fs';
 import path from 'path';
-// import faker from 'faker';
-// import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import server from '../../server';
-// import { GifController } from '../../controllers';
-
 
 chai.use(chaiHttp);
 chai.use(sinonChai);
@@ -45,7 +41,6 @@ describe('Gif test suite', () => {
         .attach('image', fs.readFileSync(path.resolve('./src/test/assets/gif1.gif')), 'gif1.gif')
         .end((err, gifRes) => {
           if (err) throw Error('Error making request');
-          console.log(gifRes.body);
           expect(gifRes).to.have.status(201);
           expect(gifRes.body).to.have.property('data');
           done();

@@ -24,6 +24,6 @@ export default {
 	},
 	clearDb: async () => {
 		const client = await pool.connect();
-		await client.query('DROP TABLE IF EXISTS users CASCADE');
+		await client.query('DROP TABLE IF EXISTS users, gifs, articles CASCADE');
 	}
 };

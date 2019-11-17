@@ -1,10 +1,13 @@
-import { userRegister, loginUser, createGif } from './rules';
+import {
+  userRegister, loginUser, createGif, createArticle
+} from './rules';
 
 const getValidator = (validationName) => {
   const rules = {
     userRegister,
     loginUser,
-    createGif
+    createGif,
+    createArticle
   };
 
   return rules[validationName];

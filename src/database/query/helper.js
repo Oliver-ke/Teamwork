@@ -80,8 +80,7 @@ export const getItems = async (table, condition = null, option = null) => {
 		};
 	try {
 		const { rows } = await dbInterface.query(query);
-
-		return { error: null, result: formater(table, rows) };
+		return { error: null, result: rows };
 	} catch (error) {
 		return { error: error.message };
 	}

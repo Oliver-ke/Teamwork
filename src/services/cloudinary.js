@@ -16,7 +16,11 @@ export default (reqFile) => {
     });
     // upload stored file to cloudinary
     try {
-      const res = currentEnv === 'test' ? { secure_url: 'http://test.png' } : cloudinary.v2.uploader.upload(path, { folder: `/teamwork/${file.mimetype}` });
+      const res = currentEnv === 'test' ? { secure_url: 'http://test.png' } : cloudinary.v2.uploader.upload(path,
+        {
+          folder: `/teamwork/${file.mimetype}`,
+          use_filename: true
+        });
       // remove stored file and return upload result
       fs.unlink(path, (err) => {
         if (err) return reject(err);
