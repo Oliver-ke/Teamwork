@@ -31,16 +31,14 @@ export default class GifController {
         title,
         ownerId,
         share: share === 'false' ? share : true,
-        image: secureUrl,
+        imageUrl: secureUrl,
         authorName: `${firstName} ${lastName}`
       });
       if (!error) {
         return successResponse(res, 201, 'Gif created successfuly', newGif);
       }
-      console.log(error);
       return errorResponse(res, 500, 'Server error');
     } catch (error) {
-      console.log(error);
       return errorResponse(res, 500, 'Internal server error');
     }
   }

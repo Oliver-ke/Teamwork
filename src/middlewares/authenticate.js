@@ -28,8 +28,8 @@ class Authenticate {
       req.user = decoded;
       return next();
     } catch (error) {
-      if (error.message === 'no auth') {
-        return errorResponse(res, 401, 'Unauthorized request');
+      if (error.message === 'no auth' || error.message === 'jwt expired') {
+        return errorResponse(res, 401, 'Authorization failed');
       }
       return errorResponse(res, 500, 'Server error');
     }
