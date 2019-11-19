@@ -6,7 +6,7 @@ const Article = `
         "ownerId" VARCHAR(128) NOT NULL REFERENCES users(id),
         "title" VARCHAR(128) NOT NULL,
         "article" TEXT NOT NULL,
-        "createdOn" date DEFAULT current_date,
+        "createdOn" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "authorName" VARCHAR(128) NOT NULL,
         "share" boolean DEFAULT true,
         "coverImageUrl" VARCHAR(128) NOT NULL
