@@ -54,6 +54,34 @@ describe('Article test suite', () => {
         });
     });
   });
+  describe('write comment for an article', () => {
+    it('should add comment', (done) => {
+      const payload = { comment: 'hello i love your post' }
+      const id = '0a598563-5a38-4f8d-9cb7-482103559ad6';
+      const route = `${articleRoute}/${id}/comment`;
+      chai.request(server).post(route).set('Authorization', bearerToken)
+        .send(payload)
+        .end((err, arRes) => {
+          if (err) throw Error('Error making request');
+          expect(arRes).to.have.status(201);
+          expect(arRes.body).to.have.property('data');
+          done();
+        });
+    });
+    it('should not add comment for non existing postId', (done) => {
+      const noExisitngId = '0a598563-5a38-4f8d-9cb7-482103559ad98'
+      const route = `${articleRoute}/${noExisitngId}/comment`;
+      const payload = { comment: 'hello i love your post' }
+      chai.request(server).post(route).set('Authorization', bearerToken)
+        .send(payload)
+        .end((err, arRes) => {
+          if (err) throw Error('Error making request');
+          expect(arRes).to.have.status(404);
+          expect(arRes.body).to.have.property('error');
+          done();
+        });
+    });
+  });
   describe('editing article', () => {
     it('should edit users article', (done) => {
       const id = '0a598563-5a38-4f8d-9cb7-482103559ad6';

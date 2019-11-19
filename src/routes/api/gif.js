@@ -3,7 +3,7 @@ import { validate, Authenticate } from '../../middlewares';
 import { GifController } from '../../controllers';
 
 const { verifyToken } = Authenticate;
-const { createGif, deleteGif } = GifController;
+const { createGif, deleteGif, commentGif } = GifController;
 
 const router = express.Router();
 
@@ -20,5 +20,13 @@ router.post('/', validate('createGif'), verifyToken, createGif);
   @Route: DELETE <domain>/api/v1/gifs/<:id>
 */
 router.delete('/:id', verifyToken, deleteGif);
+
+
+/*
+  @Description: endpoint for user to comment on a gif
+  @Access: private only authenticated users can comment
+  @Route: POST <domain>/api/v1/gifs/<:id>/comment
+*/
+router.post('/:id/comment', validate('comment'), verifyToken, commentGif);
 
 export default router;

@@ -1,5 +1,5 @@
 import {
-  userRegister, loginUser, createGif, createArticle
+  userRegister, loginUser, createGif, createArticle, comment
 } from './rules';
 
 const getValidator = (validationName) => {
@@ -7,7 +7,8 @@ const getValidator = (validationName) => {
     userRegister,
     loginUser,
     createGif,
-    createArticle
+    createArticle,
+    comment
   };
 
   return rules[validationName];

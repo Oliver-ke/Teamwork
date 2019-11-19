@@ -55,3 +55,10 @@ export const createArticle = [
     .trim(),
   body('share').optional().isBoolean().withMessage('Share should be true or false else default to true')
 ];
+
+
+export const comment = [
+  body('comment').not().isEmpty().isString()
+    .withMessage('Provide your comment')
+    .trim(),
+];

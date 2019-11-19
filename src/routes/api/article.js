@@ -4,7 +4,7 @@ import { ArticleController } from '../../controllers';
 
 const { verifyToken } = Authenticate;
 const {
-  createArticle, deleteArticle, getArticles, editArticle
+  createArticle, deleteArticle, getArticles, editArticle, commentArticle
 } = ArticleController;
 
 const router = express.Router();
@@ -36,5 +36,12 @@ router.patch('/:id', validate('createArticle'), verifyToken, editArticle);
   @Route: DELETE <domain>/api/v1/articles/<:id>
 */
 router.delete('/:id', verifyToken, deleteArticle);
+
+/*
+  @Description: endpoint for user to comment on an article
+  @Access: private only authenticated users can comment
+  @Route: POST <domain>/api/v1/articles/<:id>/comment
+*/
+router.post('/:id/comment', validate('comment'), verifyToken, commentArticle);
 
 export default router;
