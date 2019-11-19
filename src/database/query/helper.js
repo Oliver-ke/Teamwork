@@ -1,6 +1,6 @@
 import dbInterface from '../index';
-import getColumns from '../../utils/db_utils/getCollumns';
-import formater from '../../utils/db_utils/formater';
+import { getColumns, getFields } from '../../utils/db_utils/queryUtil';
+
 
 // Add item to a table
 export const createItem = async (table, data) => {
@@ -21,13 +21,18 @@ export const createItem = async (table, data) => {
 	}
 };
 
+// UPDATE table_name
+// SET column1 = value1, column2 = value2...., columnN = valueN
+// WHERE[condition];
+
 // Update a single item
-export const updateItem = async (table, id, update) => {
-	const key = Object.keys(update).toString();
-	const value = Object.values(update).toString();
+export const updateItem = async (table, id, data) => {
+	const values = Object.values(data);
+	const keys = Object.keys(data).map(val => `"${val}"`);
+	const columns = getColumns(keys);
 	const query = {
-		text: `UPDATE ${table} SET ${key}=$2 WHERE id=$1 RETURNING *`,
-		values: [id, value]
+		text: `UPDATE ${table} SET (${keys.toString()}) = (${columns}) WHERE id='${id}' RETURNING *`,
+		values,
 	};
 	try {
 		const { rows } = await dbInterface.query(query);
@@ -86,17 +91,17 @@ export const getItems = async (table, condition = null, option = null) => {
 	}
 };
 
-export const getItemsBetween = async (table, item, condition, option = null) => {
-	const values = Object.values(condition);
-	const query = {
-		text: ` SELECT * FROM ${table} WHERE ${item} BETWEEN ${values[0]} AND ${values[1]} ${option
-			? `AND ${option[0]}='${option[1]}'`
-			: ''}`
-	};
-	try {
-		const { rows } = await dbInterface.query(query);
-		return { error: null, result: formater(table, rows) };
-	} catch (error) {
-		return { error: error.message };
-	}
-};
+// export const getItemsBetween = async (table, item, condition, option = null) => {
+// 	const values = Object.values(condition);
+// 	const query = {
+// 		text: ` SELECT * FROM ${table} WHERE ${item} BETWEEN ${values[0]} AND ${values[1]} ${option
+// 			? `AND ${option[0]}='${option[1]}'`
+// 			: ''}`
+// 	};
+// 	try {
+// 		const { rows } = await dbInterface.query(query);
+// 		return { error: null, result: formater(table, rows) };
+// 	} catch (error) {
+// 		return { error: error.message };
+// 	}
+// };
