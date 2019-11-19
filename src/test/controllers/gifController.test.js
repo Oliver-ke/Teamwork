@@ -80,6 +80,18 @@ describe('Gif test suite', () => {
       });
     });
   });
+  describe('get all posts', () => {
+    it('should get feeds', (done) => {
+      const route = '/api/v1/feed';
+      chai.request(server).get(route).set('Authorization', bearerToken)
+        .end((err, arRes) => {
+          if (err) throw Error('Error making request');
+          expect(arRes).to.have.status(200);
+          expect(arRes.body).to.have.property('data');
+          done();
+        });
+    })
+  })
   describe('delete gif', () => {
     it('should delete gif', (done) => {
       chai.request(server).delete(`${gifRoute}/${gifId}`).set('Authorization', bearerToken)

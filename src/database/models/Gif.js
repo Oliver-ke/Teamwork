@@ -5,7 +5,7 @@ const Gif = `
         "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         "ownerId" VARCHAR(128) NOT NULL REFERENCES users(id),
         "title" VARCHAR(128) NOT NULL,
-        "createdOn" date DEFAULT current_date,
+        "createdOn" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         "authorName" VARCHAR(128) NOT NULL,
         "share" boolean DEFAULT true,
         "imageUrl" VARCHAR(128) NOT NULL

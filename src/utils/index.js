@@ -1,11 +1,11 @@
 import jwt from './jwt';
 import * as bcrypt from './bcrypt';
-import renameFile from './renameFile'
-import { errorResponse, successResponse } from './responses';
+import renameFile from './renameFile';
+import { errorResponse, successResponse, successResponsArray } from './responses';
 
 const { generateToken, verifyToken } = jwt;
 const { hashPassword, comparePassword } = bcrypt;
 
 export {
-  generateToken, verifyToken, hashPassword, comparePassword, errorResponse, successResponse, renameFile
+  generateToken, verifyToken, hashPassword, comparePassword, errorResponse, successResponse, renameFile, successResponsArray
 };

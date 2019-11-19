@@ -18,14 +18,6 @@ const errorResponse = (res, status, message) => {
   res.status(status).json({ status, error: message });
 };
 
-/**
-   * comparePassword
-   * @param {object} res - response object
-   * @param {number} status - status of the error
-   * @param {object} data - response payload
-   * @param {string} message - optional message
-   * @returns {Object} return response object
-   */
 
 const successResponse = (res, status, message = null, payload = null) => {
   const response = {
@@ -38,4 +30,11 @@ const successResponse = (res, status, message = null, payload = null) => {
   res.status(status).json(response);
 };
 
-export { successResponse, errorResponse };
+const successResponsArray = (res, status, arrayData) => {
+  const response = {
+    status: statusRes[status],
+    data: arrayData
+  };
+  res.status(status).json(response);
+};
+export { successResponse, errorResponse, successResponsArray };

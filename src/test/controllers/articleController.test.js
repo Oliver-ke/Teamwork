@@ -56,7 +56,7 @@ describe('Article test suite', () => {
   });
   describe('write comment for an article', () => {
     it('should add comment', (done) => {
-      const payload = { comment: 'hello i love your post' }
+      const payload = { comment: 'hello i love your post' };
       const id = '0a598563-5a38-4f8d-9cb7-482103559ad6';
       const route = `${articleRoute}/${id}/comment`;
       chai.request(server).post(route).set('Authorization', bearerToken)
@@ -69,9 +69,9 @@ describe('Article test suite', () => {
         });
     });
     it('should not add comment for non existing postId', (done) => {
-      const noExisitngId = '0a598563-5a38-4f8d-9cb7-482103559ad98'
+      const noExisitngId = '0a598563-5a38-4f8d-9cb7-482103559ad98';
       const route = `${articleRoute}/${noExisitngId}/comment`;
-      const payload = { comment: 'hello i love your post' }
+      const payload = { comment: 'hello i love your post' };
       chai.request(server).post(route).set('Authorization', bearerToken)
         .send(payload)
         .end((err, arRes) => {
