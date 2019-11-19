@@ -66,4 +66,40 @@ export default class GifController {
       return errorResponse(res, 500, 'internal server error');
     }
   }
+
+  /**
+ * @method commentArticle
+ * @description - method for users to comment on a gif
+ * @param {object} req - request object
+ * @param {object} res - response object
+ * @return {object} request response body
+ */
+  static async commentGif(req, res) {
+    const { userId: ownerId, firstName, lastName } = req.user;
+    try {
+      const { id: gifId } = req.params;
+      const { comment } = req.body;
+      const { result: gif } = await getItem('gifs', { id: gifId });
+      if (!gif) {
+        return errorResponse(res, 404, 'No article found');
+      }
+      const { error, result: newComment } = await createItem('comments', {
+        comment,
+        ownerId,
+        authorName: `${firstName} ${lastName}`,
+        postId: gifId
+      });
+      const response = {
+        ...newComment,
+        gifTitle: gif.title,
+      };
+      if (!error) {
+        return successResponse(res, 201, 'Comment successfully created”', response);
+      }
+      throw new Error(error);
+    } catch (error) {
+      console.log(error);
+      return errorResponse(res, 500, 'internal server error');
+    }
+  }
 }

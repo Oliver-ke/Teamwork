@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 chai.use(sinonChai);
 const { expect } = chai;
 
-const { deleteGif, createGif } = GifController;
+const { deleteGif, createGif, commentGif } = GifController;
 
 const gifRoute = '/api/v1/gifs';
 const signinRoute = '/api/v1/auth/signin';
@@ -51,6 +51,33 @@ describe('Gif test suite', () => {
           expect(gifRes.body).to.have.property('data');
           done();
         });
+    });
+    describe('write comment for an gif', () => {
+      it('should add comment', (done) => {
+        const payload = { comment: 'hello i love your post' };
+        const route = `${gifRoute}/${gifId}/comment`;
+        chai.request(server).post(route).set('Authorization', bearerToken)
+          .send(payload)
+          .end((err, arRes) => {
+            if (err) throw Error('Error making request');
+            expect(arRes).to.have.status(201);
+            expect(arRes.body).to.have.property('data');
+            done();
+          });
+      });
+      it('should not add comment for non existing postId', (done) => {
+        const noExisitngId = '0a598563-5a38-4f8d-9cb7-482103559ad98';
+        const route = `${gifRoute}/${noExisitngId}/comment`;
+        const payload = { comment: 'hello i love your post' };
+        chai.request(server).post(route).set('Authorization', bearerToken)
+          .send(payload)
+          .end((err, arRes) => {
+            if (err) throw Error('Error making request');
+            expect(arRes).to.have.status(404);
+            expect(arRes.body).to.have.property('error');
+            done();
+          });
+      });
     });
   });
   describe('delete gif', () => {
@@ -95,6 +122,19 @@ describe('Gif test suite', () => {
       };
       sinon.stub(res, 'status').returnsThis();
       await createGif(req, res);
+      expect(res.status).to.have.been.calledWith(500);
+    });
+
+    it('commentGif should catch invalid request', async () => {
+      const req = {
+        user: { userId: '11111' },
+      };
+      const res = {
+        status: () => { },
+        json: () => { },
+      };
+      sinon.stub(res, 'status').returnsThis();
+      await commentGif(req, res);
       expect(res.status).to.have.been.calledWith(500);
     });
   });

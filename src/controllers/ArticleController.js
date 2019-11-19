@@ -131,4 +131,41 @@ export default class ArticleController {
       return errorResponse(res, 500, 'internal server error');
     }
   }
+
+  /**
+  * @method commentArticle
+  * @description - method for users to comment on an article
+  * @param {object} req - request object
+  * @param {object} res - response object
+  * @return {object} request response body
+  */
+  static async commentArticle(req, res) {
+    const { comment } = req.body;
+    const { id: articleId } = req.params;
+    const { userId: ownerId, firstName, lastName } = req.user;
+    try {
+      const { result: article } = await getItem('articles', { id: articleId });
+      if (!article) {
+        return errorResponse(res, 404, 'No article found');
+      }
+      const { error, result: newComment } = await createItem('comments', {
+        comment,
+        ownerId,
+        authorName: `${firstName} ${lastName}`,
+        postId: articleId
+      });
+      const response = {
+        ...newComment,
+        articleTitle: article.title,
+        article: article.article
+      };
+      if (!error) {
+        return successResponse(res, 201, 'Comment successfully created”', response);
+      }
+      throw new Error(error);
+    } catch (error) {
+      console.log(error);
+      return errorResponse(res, 500, 'internal server error');
+    }
+  }
 }
