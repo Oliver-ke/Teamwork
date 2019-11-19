@@ -3,7 +3,7 @@ import { validate, Authenticate } from '../../middlewares';
 import { GifController } from '../../controllers';
 
 const { verifyToken } = Authenticate;
-const { createGif } = GifController;
+const { createGif, deleteGif } = GifController;
 
 const router = express.Router();
 
@@ -13,5 +13,12 @@ const router = express.Router();
   @Route: POST <domain>/api/v1/gifs
 */
 router.post('/', validate('createGif'), verifyToken, createGif);
+
+/*
+  @Description: endpoint users to delete gif
+  @Access: private only authenticated users can deleted their  gif
+  @Route: DELETE <domain>/api/v1/gifs/<:id>
+*/
+router.delete('/:id', verifyToken, deleteGif);
 
 export default router;

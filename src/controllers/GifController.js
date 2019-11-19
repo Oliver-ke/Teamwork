@@ -2,7 +2,7 @@ import {
   errorResponse, successResponse
 } from '../utils';
 import { uploadCloudinary } from '../services';
-import { createItem } from '../database/query/helper';
+import { createItem, deleteItem, getItem } from '../database/query/helper';
 
 
 /**
@@ -40,6 +40,30 @@ export default class GifController {
       return errorResponse(res, 500, 'Server error');
     } catch (error) {
       return errorResponse(res, 500, 'Internal server error');
+    }
+  }
+
+  /**
+  * @method deleteGif
+  * @description - method for users to delete an existing gif
+  * @param {object} req - request object
+  * @param {object} res - response object
+  * @return {object} request response body
+  */
+  static async deleteGif(req, res) {
+    try {
+      const { userId } = req.user;
+      const { id: gifId } = req.params;
+      const { result: gif } = await getItem('gifs', { id: gifId });
+      if (!gif) return errorResponse(res, 404, 'Gif not found');
+      if (gif.ownerId !== userId) {
+        return errorResponse(res, 403, 'Not allowed');
+      }
+      const { result: deleted } = await deleteItem('gifs', gifId);
+      if (deleted) return successResponse(res, 200, 'gif post successfully deleted');
+      return errorResponse(res, 500, 'Server error deleting article');
+    } catch (error) {
+      return errorResponse(res, 500, 'internal server error');
     }
   }
 }

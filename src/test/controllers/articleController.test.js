@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import seedArticle from '../../database/seeds/003-article';
 import server from '../../server';
 import { ArticleController } from '../../controllers';
 
@@ -16,6 +17,9 @@ const signinRoute = '/api/v1/auth/signin';
 let bearerToken;
 
 describe('Article test suite', () => {
+  before(async () => {
+    seedArticle();
+  });
   describe('creating article', () => {
     it('Should check for invalid inputs', (done) => {
       const dummyArticle = {
