@@ -33,6 +33,28 @@ export default class ArticleController {
   }
 
   /**
+* @method getArticle
+* @description - method to get all articles
+* @param {object} req - request object
+* @param {object} res - response object
+* @return {object} request response body
+*/
+  static async getArticle(req, res) {
+    try {
+      const { id } = req.params;
+      const { error, result: article } = await getItem('articles', { id });
+      const { result: commentArr } = await getItems('comments', { postId: id });
+      if (!error) {
+        const response = { ...article, comments: commentArr };
+        return successResponse(res, 200, 'Articles', response);
+      }
+      return errorResponse(res, 500, 'Server error geting items');
+    } catch (error) {
+      return errorResponse(res, 500, 'Server error');
+    }
+  }
+
+  /**
   * @method createArticle
   * @description - method for users to create article
   * @param {object} req - request object

@@ -90,8 +90,16 @@ describe('Gif test suite', () => {
           expect(arRes.body).to.have.property('data');
           done();
         });
-    })
-  })
+    });
+    it('should specific articles', (done) => {
+      const route = `${gifRoute}/${gifId}`;
+      chai.request(server).get(route).set('Authorization', bearerToken).end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('data');
+        done();
+      });
+    });
+  });
   describe('delete gif', () => {
     it('should delete gif', (done) => {
       chai.request(server).delete(`${gifRoute}/${gifId}`).set('Authorization', bearerToken)

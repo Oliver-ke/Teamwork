@@ -82,6 +82,25 @@ describe('Article test suite', () => {
         });
     });
   });
+  describe('Getting articles', () => {
+    it('should all articles', (done) => {
+      chai.request(server).get(articleRoute).set('Authorization', bearerToken).end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('data');
+        done();
+      });
+    });
+
+    it('should specific articles', (done) => {
+      const id = '0a598563-5a38-4f8d-9cb7-482103559ad6';
+      const route = `${articleRoute}/${id}`;
+      chai.request(server).get(route).set('Authorization', bearerToken).end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('data');
+        done();
+      });
+    });
+  });
   describe('editing article', () => {
     it('should edit users article', (done) => {
       const id = '0a598563-5a38-4f8d-9cb7-482103559ad6';
@@ -124,15 +143,6 @@ describe('Article test suite', () => {
       const articleId = '59403e37-5ea7-44b0-9606-bafe179f6e05';
       chai.request(server).delete(`${articleRoute}/${articleId}`).set('Authorization', bearerToken).end((err, res) => {
         expect(res).to.have.status(403);
-        done();
-      });
-    });
-  });
-  describe('Getting articles', () => {
-    it('should all articles', (done) => {
-      chai.request(server).get(articleRoute).set('Authorization', bearerToken).end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.have.property('data');
         done();
       });
     });

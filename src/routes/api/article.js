@@ -4,7 +4,7 @@ import { ArticleController } from '../../controllers';
 
 const { verifyToken } = Authenticate;
 const {
-  createArticle, deleteArticle, getArticles, editArticle, commentArticle
+  createArticle, deleteArticle, getArticles, editArticle, commentArticle, getArticle
 } = ArticleController;
 
 const router = express.Router();
@@ -15,6 +15,13 @@ const router = express.Router();
   @Route: GET <domain>/api/v1/articles
 */
 router.get('/', verifyToken, getArticles);
+
+/*
+  @Description: endpoint users get specific article
+  @Access: private authenticated users can create gif
+  @Route: GET <domain>/api/v1/articles/>id>
+*/
+router.get('/:id', verifyToken, getArticle);
 
 /*
   @Description: endpoint users to create article

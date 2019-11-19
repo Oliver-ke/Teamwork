@@ -74,13 +74,13 @@ export const getItem = async (table, option) => {
 };
 
 // Get items froom the database
-export const getItems = async (table, condition = null, option = null) => {
+export const getItems = async (table, condition = null) => {
 	const value = condition ? Object.values(condition) : null;
 	const key = condition ? Object.keys(condition).toString() : null;
 	const query = !condition
 		? { text: `SELECT * FROM ${table}` }
 		: {
-			text: `SELECT * FROM ${table} WHERE ${key}=$1 ${option ? `AND ${option[0]}='${option[1]}'` : ''}`,
+			text: `SELECT * FROM ${table} WHERE "${key}"=$1 `,
 			values: value
 		};
 	try {
@@ -90,18 +90,3 @@ export const getItems = async (table, condition = null, option = null) => {
 		return { error: error.message };
 	}
 };
-
-// export const getItemsBetween = async (table, item, condition, option = null) => {
-// 	const values = Object.values(condition);
-// 	const query = {
-// 		text: ` SELECT * FROM ${table} WHERE ${item} BETWEEN ${values[0]} AND ${values[1]} ${option
-// 			? `AND ${option[0]}='${option[1]}'`
-// 			: ''}`
-// 	};
-// 	try {
-// 		const { rows } = await dbInterface.query(query);
-// 		return { error: null, result: formater(table, rows) };
-// 	} catch (error) {
-// 		return { error: error.message };
-// 	}
-// };

@@ -2,7 +2,9 @@ import {
   errorResponse, successResponse
 } from '../utils';
 import { uploadCloudinary } from '../services';
-import { createItem, deleteItem, getItem } from '../database/query/helper';
+import {
+  createItem, deleteItem, getItem, getItems
+} from '../database/query/helper';
 
 
 /**
@@ -40,6 +42,29 @@ export default class GifController {
       return errorResponse(res, 500, 'Server error');
     } catch (error) {
       return errorResponse(res, 500, 'Internal server error');
+    }
+  }
+
+
+  /**
+* @method getgif
+* @description - method to get all articles
+* @param {object} req - request object
+* @param {object} res - response object
+* @return {object} request response body
+*/
+  static async getGif(req, res) {
+    try {
+      const { id } = req.params;
+      const { error, result: gif } = await getItem('gifs', { id });
+      const { result: commentArr } = await getItems('comments', { postId: id });
+      if (!error) {
+        const response = { ...gif, comments: commentArr };
+        return successResponse(res, 200, 'Gif posts', response);
+      }
+      return errorResponse(res, 500, 'Server error geting items');
+    } catch (error) {
+      return errorResponse(res, 500, 'Server error');
     }
   }
 
