@@ -3,7 +3,7 @@ import {
 } from '../utils';
 import { uploadCloudinary } from '../services';
 import {
-  createItem, getItem, deleteItem, getItems
+  createItem, getItem, deleteItem, getItems, updateItem,
 } from '../database/query/helper';
 
 
@@ -42,17 +42,19 @@ export default class ArticleController {
   static async createArticle(req, res) {
     const { title, article, share } = req.body;
     const { userId: ownerId, firstName, lastName } = req.user;
-    if (!req.files || !req.files.image) {
-      return errorResponse(res, 400, 'Please provide a cover image');
-    }
-    const { image } = req.files;
-    try {
+
+    let imgUrl;
+    if (req.files && req.files.image) {
+      const { image } = req.files;
       const { secure_url: secureUrl } = await uploadCloudinary(image);
+      imgUrl = secureUrl;
+    }
+    try {
       const { error, result: newArticle } = await createItem('articles', {
         title,
         ownerId,
         share: share === 'false' ? share : true,
-        coverImageUrl: secureUrl,
+        coverImageUrl: imgUrl || 'none',
         article,
         authorName: `${firstName} ${lastName}`
       });
@@ -65,42 +67,45 @@ export default class ArticleController {
     }
   }
 
-  //   /**
-  //  * @method editArticle
-  //  * @description - method for users to edit their article
-  //  * @param {object} req - request object
-  //  * @param {object} res - response object
-  //  * @return {object} request response body
-  //  */
-  //   static async editArticle(req, res) {
-  //     const { title, article, share } = req.body;
-  //     const { id: articleId } = req.params;
-  //     const { userId: ownerId, firstName, lastName } = req.user;
-  //     const { image } = req.files;
-  //     try {
-  //       const { result: existingArticle } = await getItem('articles', articleId);
-  //       if (!existingArticle) return errorResponse(res, 404, 'Not found');
-  //       if (existingArticle.ownerId !== ownerId) {
-  //         return errorResponse(res, 403, 'Request not allowed');
-  //       }
-  //       const { secure_url: secureUrl } = await uploadCloudinary(image);
-  //       const { error, result: newArticle } = await createItem('articles', {
-  //         title: title || existingArticle.title,
-  //         ownerId,
-  //         share: share === 'false' ? share : true,
-  //         coverImageUrl: secureUrl || existingArticle.coverImageUrl,
-  //         article: article || existingArticle.article,
-  //         authorName: `${firstName} ${lastName}`
-  //       });
-  //       if (!error) {
-  //         return successResponse(res, 201, 'Gif created successfuly', newArticle);
-  //       }
-  //       return errorResponse(res, 500, 'Server error');
-  //     } catch (error) {
-  //       console.log(error);
-  //       return errorResponse(res, 500, 'Internal server error');
-  //     }
-  //   }
+  /**
+ * @method editArticle
+ * @description - method for users to edit their article
+ * @param {object} req - request object
+ * @param {object} res - response object
+ * @return {object} request response body
+ */
+  static async editArticle(req, res) {
+    const { title, article, share } = req.body;
+    const { id: articleId } = req.params;
+    const { userId: ownerId, firstName, lastName } = req.user;
+    try {
+      const { result: existingArticle } = await getItem('articles', { id: articleId });
+      if (!existingArticle) return errorResponse(res, 404, 'Not found');
+      if (existingArticle.ownerId !== ownerId) {
+        return errorResponse(res, 403, 'Request not allowed');
+      }
+      let imgUrl;
+      if (req.files && req.files.image) {
+        const { image } = req.files;
+        const { secure_url: secureUrl } = await uploadCloudinary(image);
+        imgUrl = secureUrl;
+      }
+      const { error, result: newArticle } = await updateItem('articles', articleId, {
+        title: title || existingArticle.title,
+        ownerId,
+        share: share === 'false' ? share : true,
+        coverImageUrl: imgUrl || existingArticle.coverImageUrl,
+        article: article || existingArticle.article,
+        authorName: `${firstName} ${lastName}`
+      });
+      if (!error) {
+        return successResponse(res, 200, 'Article successfully updated', newArticle);
+      }
+      return errorResponse(res, 500, 'Server error');
+    } catch (error) {
+      return errorResponse(res, 500, 'Internal server error');
+    }
+  }
 
   /**
   * @method deleteArticle
@@ -120,7 +125,7 @@ export default class ArticleController {
         return errorResponse(res, 403, 'Not allowed');
       }
       const { result: deleted } = await deleteItem('articles', articleId);
-      if (deleted) return successResponse(res, 200, 'Article Deleted');
+      if (deleted) return successResponse(res, 200, 'Article successfully deleted');
       return errorResponse(res, 500, 'Server error deleting article');
     } catch (error) {
       return errorResponse(res, 500, 'internal server error');

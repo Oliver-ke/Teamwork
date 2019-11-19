@@ -50,6 +50,36 @@ describe('Article test suite', () => {
         });
     });
   });
+  describe('editing article', () => {
+    it('should edit users article', (done) => {
+      const id = '0a598563-5a38-4f8d-9cb7-482103559ad6';
+      const update = {
+        title: 'some new title',
+        article: 'some new article'
+      };
+      chai.request(server).patch(`${articleRoute}/${id}`).set('Authorization', bearerToken).send(update)
+        .end((err, arRes) => {
+          if (err) throw Error('Error making request');
+          expect(arRes).to.have.status(200);
+          expect(arRes.body).to.have.property('data');
+          done();
+        });
+    });
+    it('should not edit article of another user', (done) => {
+      const id = '59403e37-5ea7-44b0-9606-bafe179f6e05';
+      const update = {
+        title: 'some new title',
+        article: 'some new article'
+      };
+      chai.request(server).patch(`${articleRoute}/${id}`).set('Authorization', bearerToken).send(update)
+        .end((err, arRes) => {
+          if (err) throw Error('Error making request');
+          expect(arRes).to.have.status(403);
+          expect(arRes.body).to.have.property('error');
+          done();
+        });
+    });
+  });
   describe('Deleting article', () => {
     it('should deleted an article with id', (done) => {
       const articleId = '9c291e0d-5183-40dc-9c8c-20be7dd70479';
@@ -80,7 +110,6 @@ describe('Article test suite', () => {
     it('Controller should handle error', async () => {
       const req = {
         user: { userId: '11111' },
-        files: { image: 'https://img.png' },
         params: { id: 'none valid id' },
         body: {
           title: 'some title'
@@ -94,7 +123,7 @@ describe('Article test suite', () => {
       await createArticle(req, res);
       expect(res.status).to.have.been.calledWith(500);
     });
-    it('Controller not add article without image', async () => {
+    it('Controller should catch invalid image request', async () => {
       const req = {
         user: { userId: '11111' },
         params: { id: 'none valid id' },
@@ -108,7 +137,7 @@ describe('Article test suite', () => {
       };
       sinon.stub(res, 'status').returnsThis();
       await createArticle(req, res);
-      expect(res.status).to.have.been.calledWith(400);
+      expect(res.status).to.have.been.calledWith(500);
     });
     it('Should handle error for deleteArticle', async () => {
       const req = {};
