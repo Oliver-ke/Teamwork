@@ -56,7 +56,13 @@ export default class UserController {
         throw new Error(createError);
       }
       const { password: ignored, ...rest } = newUser;
-      successResponse(res, 201, 'user created', rest);
+      const token = await generateToken({ userId: rest.id, firstName, lastName });
+      const response = {
+        ...rest,
+        userId: rest.id,
+        token
+      }
+      successResponse(res, 201, 'User account successfully created”', response);
     } catch (error) {
       return errorResponse(res, 500, 'Server error');
     }
