@@ -1,8 +1,8 @@
 import uuid from 'uuid/v4';
 import {
-  errorResponse, successResponse, hashPassword, generateToken
+  errorResponse, successResponse, hashPassword, generateToken, successResponsArray
 } from '../utils';
-import { createItem, getItem } from '../database/query/helper';
+import { createItem, getItem, getItems } from '../database/query/helper';
 import { comparePassword } from '../utils/bcrypt';
 
 /**
@@ -29,7 +29,7 @@ export default class UserController {
       department,
       address,
       userRole,
-      avaterUrl
+      avaterUrl,
     } = req.body;
 
     // verify user dont already exist
@@ -50,7 +50,7 @@ export default class UserController {
         department,
         address,
         userRole: userRole ? userRole.toLowerCase() : 'employee',
-        avaterUrl: avaterUrl || 'none'
+        avaterUrl: avaterUrl || 'none',
       });
       if (createError) {
         throw new Error(createError);
@@ -60,8 +60,8 @@ export default class UserController {
       const response = {
         ...rest,
         userId: rest.id,
-        token
-      }
+        token,
+      };
       successResponse(res, 201, 'User account successfully created”', response);
     } catch (error) {
       return errorResponse(res, 500, 'Server error');
@@ -93,8 +93,30 @@ export default class UserController {
       }
       return errorResponse(res, 401, 'Authorzation fail');
     } catch (error) {
-      console.log(error);
       return errorResponse(res, 500, 'Server Error!');
+    }
+  }
+
+  /**
+ * @method getUsers
+ * @description - method for admin to get all users
+ * @param {object} req - request object
+ * @param {object} res - response object
+ * @return {object} request response body
+ */
+  static async getUsers(req, res) {
+    try {
+      const { error, result: users } = await getItems('users');
+      if (error) {
+        return errorResponse(res, 500, 'Internal server error');
+      }
+      const noPasswords = users.map((user) => {
+        delete user.password;
+        return user;
+      });
+      return successResponsArray(res, 200, noPasswords);
+    } catch (error) {
+      return errorResponse(res, 500, 'Server error');
     }
   }
 }

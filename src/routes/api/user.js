@@ -3,9 +3,16 @@ import { validate, Authenticate } from '../../middlewares';
 import { UserController } from '../../controllers';
 
 const { verifyAdmin, verifyToken, verifyRootUser } = Authenticate;
-const { registerUser, loginUser } = UserController;
+const { registerUser, loginUser, getUsers } = UserController;
 
 const router = express.Router();
+
+/*
+  @Description: endpoint for admin get all users
+  @Access: private only admin users
+  @Route: <domain>/api/v1/auth/users
+*/
+router.get('/users', verifyToken, verifyAdmin, getUsers);
 
 /*
   @Description: endpoint for admin to add user
@@ -27,6 +34,5 @@ router.post('/create-user-root', validate('userRegister'), verifyRootUser, regis
   @Route: <domain>/api/v1/auth/signin
 */
 router.post('/signin', validate('loginUser'), loginUser);
-
 
 export default router;

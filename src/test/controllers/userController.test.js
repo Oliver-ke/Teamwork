@@ -6,13 +6,13 @@ import sinonChai from 'sinon-chai';
 import server from '../../server';
 import { UserController } from '../../controllers';
 
-
 chai.use(chaiHttp);
 chai.use(sinonChai);
 const { expect } = chai;
 
 const signinRoute = '/api/v1/auth/signin';
 const userRoute = '/api/v1/auth/create-user';
+const getUsersRouter = '/api/v1/auth/users';
 const rootUserRoute = '/api/v1/auth/create-user-root';
 
 const { registerUser } = UserController;
@@ -29,6 +29,7 @@ describe('Users test suite', () => {
     address: faker.address.streetAddress(),
   };
   describe('Creating User', () => {
+    let adminToken;
     it('It should error for invalid request data', (done) => {
       const testUser = {
         firstName: faker.name.firstName(),
@@ -55,7 +56,7 @@ describe('Users test suite', () => {
     it('Should not allow none admin user', (done) => {
       const noneAdmin = {
         email: 'oliver4@gmail.com',
-        password: 'password'
+        password: 'password',
       };
       chai.request(server).post(signinRoute).send(noneAdmin).end((err, res) => {
         const { token } = res.body.data;
@@ -71,12 +72,12 @@ describe('Users test suite', () => {
     it('Should allow admin user to create user', (done) => {
       const admin = {
         email: 'admin@gmail.com',
-        password: 'devcAdmin'
+        password: 'devcAdmin',
       };
       chai.request(server).post(signinRoute).send(admin).end((err, res) => {
         const { token } = res.body.data;
-        const tokenBearer = `Bearer ${token}`;
-        chai.request(server).post(userRoute).set('Authorization', tokenBearer).send(dummyUser)
+        adminToken = `Bearer ${token}`;
+        chai.request(server).post(userRoute).set('Authorization', adminToken).send(dummyUser)
           .end((err, res) => {
             expect(res).to.have.status(201);
             expect(res.body).to.have.property('data');
@@ -84,12 +85,19 @@ describe('Users test suite', () => {
           });
       });
     });
+    it('Should allow admin get all users', (done) => {
+      chai.request(server).get(getUsersRouter).set('Authorization', adminToken).end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('data');
+        done();
+      });
+    });
     it('Should create rootAdmin with valid secret', (done) => {
       const rootAdmin = {
         ...dummyUser,
         secret: 'root-man',
         email: faker.internet.email(),
-        userRole: 'admin'
+        userRole: 'admin',
       };
       chai.request(server).post(rootUserRoute).send(rootAdmin).end((err, res) => {
         expect(res).to.have.status(201);
@@ -101,7 +109,7 @@ describe('Users test suite', () => {
       const rootAdmin = {
         ...dummyUser,
         secret: 'unknow secret',
-        userRole: 'admin'
+        userRole: 'admin',
       };
       chai.request(server).post(rootUserRoute).send(rootAdmin).end((err, res) => {
         expect(res).to.have.status(403);
@@ -112,9 +120,9 @@ describe('Users test suite', () => {
   describe('registerUser controller test', () => {
     it('Should handle error exception', async () => {
       const req = {
-        body: {}
+        body: {},
       };
-      const res = { status: () => { }, json: () => { } };
+      const res = { status: () => {}, json: () => {} };
       sinon.stub(res, 'status').returnsThis();
       await registerUser(req, res);
       expect(true).to.eq(true);

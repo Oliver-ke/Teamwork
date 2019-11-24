@@ -51,7 +51,8 @@ class Authenticate {
       }
       return errorResponse(res, 401, 'Access denied, only admins');
     } catch (error) {
-      return errorResponse(res, 500, 'Server error!');
+      console.log(error);
+      return errorResponse(res, 500, 'Server error Authenticating user');
     }
   }
 
